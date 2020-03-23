@@ -4,10 +4,28 @@ from selenium.webdriver.support import expected_conditions as EC
 import re
 
 
+def clear(s):
+    return re.sub(r'\([^()]*\)[,:() - ^A-zА-я]', "", s)
+
+
 class SearchHelper:
 
     def __init__(self, app):
         self.app = app
+
+    # Получение курса с сайта медуза
+    def get_rates_meduza(self):
+        wd = self.app.wd
+        self.app.open_home_page()
+        usd_m = wd.find_element_by_css_selector(".ExchangeRates-usd").text
+        return usd_m
+
+    # Получение курса с сайта яндекс
+    def get_rates_yandex(self):
+        wd = self.app.wd
+        wd.get('https://yandex.ru/')
+        usd = wd.find_element_by_css_selector(".inline-stocks__value_inner").text
+        return usd
 
     # Получение слова из первого абзаца статьи
     def search_value(self):
@@ -41,11 +59,8 @@ class SearchHelper:
     def find_result(self):
         wd = self.app.wd
         text = wd.find_element_by_xpath('//*[@id="result-stats"]').text
-        only_digits = self.clear(text)
+        only_digits = clear(text)
         return int(only_digits)
-
-    def clear(self, s):
-        return re.sub(r'[,:() - ^A-zА-я]', "", re.sub(r'\([^()]*\)', "", s))
 
     def wait_element(self, button_name):
         wd = self.app.wd
