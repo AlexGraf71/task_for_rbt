@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import re
 
 
 class SearchHelper:
@@ -26,15 +27,25 @@ class SearchHelper:
         self.wait_element_for_css('div:nth-child(4) > a > div > div')
         wd.find_element_by_css_selector('div:nth-child(4) > a > div > div').click()
 
-    # Переход на google.com и поиск слова
-
+    # Переход на google.com в новой вкладке и поиск слова
     def google_search(self):
         wd = self.app.wd
-        wd.get('https://www.google.com')
+        wd.execute_script("window.open('https://www.google.com');")
+        new_window = wd.window_handles[1]
+        wd.switch_to.window(new_window)
         wd.find_element(By.NAME, "q").click()
         wd.find_element(By.NAME, "q").send_keys(word)
         self.wait_element('btnK')
         wd.find_element(By.NAME, 'btnK').click()
+
+    def find_result(self):
+        wd = self.app.wd
+        text = wd.find_element_by_xpath('//*[@id="result-stats"]').text
+        only_digits = self.clear(text)
+        return int(only_digits)
+
+    def clear(self, s):
+        return re.sub(r'[,:() - ^A-zА-я]', "", re.sub(r'\([^()]*\)', "", s))
 
     def wait_element(self, button_name):
         wd = self.app.wd
