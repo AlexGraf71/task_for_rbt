@@ -1,0 +1,8 @@
+/env/
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/rSettings.xml
+.idea/task_for_rbt.iml
+.idea/vcs.xml
+/test/geckodriver.log
