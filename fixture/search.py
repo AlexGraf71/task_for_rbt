@@ -2,7 +2,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import re
-from model.search import Search
 
 
 def clear(self, s):
@@ -58,10 +57,15 @@ class SearchHelper:
         self.search_value(search.value)
         if search.there_is_a_mistake == "Yes":
             print("Известная ошибка")
-        elif len(wd.find_elements_by_css_selector(".Chronology-item")) > 0 and search.acceptance_conditions == "есть результаты":
+        if len(wd.find_elements_by_css_selector(
+                ".Chronology-item")) > 0 and search.acceptance_conditions == "есть результаты":
             return True
-        elif wd.find_element_by_css_selector(".Search-message") and search.acceptance_conditions == "нет результатов":
+        else:
+            return False
+        if wd.find_element_by_css_selector(".Search-message") and search.acceptance_conditions == "нет результатов":
             return True
+        else:
+            return False
 
     # Переход на google.com в новой вкладке и поиск слова
     def google_search(self):
