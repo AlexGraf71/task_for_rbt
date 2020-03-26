@@ -2,10 +2,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import re
+from model.search import Search
 
 
-def clear(s):
-    return re.sub(r'\([^()]*\)[,:() - ^A-zА-я]', "", s)
+def clear(self, s):
+    return re.sub(r'[,:() - ^A-zА-я]', "", re.sub(r'\([^()]*\)', "", s))
 
 
 class SearchHelper:
@@ -28,22 +29,39 @@ class SearchHelper:
         return usd
 
     # Получение слова из первого абзаца статьи
-    def search_value(self):
+    def get_value(self, search):
         wd = self.app.wd
         self.app.open_home_page()
-        self.go_to_article_page()
+        self.go_to_article_page(search)
         self.wait_element_for_css('p:nth-child(1)')
         text = wd.find_element_by_css_selector('p:nth-child(1)').text.split()
         global word
         word = text[3]
 
     # Переход на страницу найденной статьи.
-    def go_to_article_page(self):
+    def go_to_article_page(self, search):
         wd = self.app.wd
-        wd.find_element_by_css_selector(' .Header-buttons [type="button"]').click()
-        wd.find_element_by_css_selector('.Search-header > div > input').send_keys('коронавирус')
+        self.search_value(search)
         self.wait_element_for_css('div:nth-child(4) > a > div > div')
         wd.find_element_by_css_selector('div:nth-child(4) > a > div > div').click()
+
+    # Поиск значения на сайте medusa
+    def search_value(self, text):
+        wd = self.app.wd
+        wd.find_element_by_css_selector(' .Header-buttons [type="button"]').click()
+        wd.find_element_by_css_selector('.Search-header > div > input').send_keys(text)
+
+    # Проверка условий приёмки
+    def verification_of_acceptance_conditions(self, search):
+        wd = self.app.wd
+        self.app.open_home_page()
+        self.search_value(search.value)
+        if search.there_is_a_mistake == "Yes":
+            print("Известная ошибка")
+        elif len(wd.find_elements_by_css_selector(".Chronology-item")) > 0 and search.acceptance_conditions == "есть результаты":
+            return True
+        elif wd.find_element_by_css_selector(".Search-message") and search.acceptance_conditions == "нет результатов":
+            return True
 
     # Переход на google.com в новой вкладке и поиск слова
     def google_search(self):

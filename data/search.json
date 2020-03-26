@@ -1,0 +1,27 @@
+[
+  {
+    "value": "корона",
+    "py/object": "model.search.Search",
+    "acceptance_conditions": "есть результаты",
+    "there_is_a_mistake": "No"
+
+  },
+   {
+    "value": "Коронав",
+    "py/object": "model.search.Search",
+    "acceptance_conditions": "нет результатов",
+    "there_is_a_mistake": "No"
+  },
+   {
+    "value": "Коронавирус воскресенье",
+    "py/object": "model.search.Search",
+    "acceptance_conditions": "есть результаты",
+    "there_is_a_mistake": "No"
+  },
+   {
+    "value": "Фрукт",
+    "py/object": "model.search.Search",
+    "acceptance_conditions": "есть результаты",
+    "there_is_a_mistake": "Yes"
+  }
+]

@@ -4,8 +4,11 @@ def test_exchange_rates(app):
 
 
 def test_search_word(app):
-    app.search.search_value()
+    app.search.get_value('коронавирус')
     app.search.google_search()
     assert app.search.find_result() > 1000
 
 
+def test_search(app, data_search):
+    value = data_search
+    assert True == app.search.verification_of_acceptance_conditions(value)
