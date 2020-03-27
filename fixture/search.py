@@ -6,7 +6,7 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 
 
-def clear(self, s):
+def clear(s):
     return re.sub(r'[,:() - ^A-zА-я]', "", re.sub(r'\([^()]*\)', "", s))
 
 
