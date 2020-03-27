@@ -7,7 +7,7 @@
 
   },
    {
-    "value": "Коронав",
+    "value": "Коронавэ",
     "py/object": "model.search.Search",
     "acceptance_conditions": "нет результатов",
     "there_is_a_mistake": "No"

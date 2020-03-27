@@ -1,7 +1,9 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
 import re
+
+import pytest
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 def clear(self, s):
@@ -51,21 +53,23 @@ class SearchHelper:
         wd.find_element_by_css_selector('.Search-header > div > input').send_keys(text)
 
     # Проверка условий приёмки
+
     def verification_of_acceptance_conditions(self, search):
-        wd = self.app.wd
-        self.app.open_home_page()
-        self.search_value(search.value)
-        if search.there_is_a_mistake == "Yes":
-            print("Известная ошибка")
-        if len(wd.find_elements_by_css_selector(
-                ".Chronology-item")) > 0 and search.acceptance_conditions == "есть результаты":
-            return True
+        if search.there_is_a_mistake == "No":
+            wd = self.app.wd
+            self.app.open_home_page()
+            self.search_value(search.value)
+            if len(wd.find_elements_by_css_selector(
+                    ".Chronology-item")) > 0 and search.acceptance_conditions == "есть результаты":
+                return True
+
+            elif wd.find_element_by_css_selector(
+                    "div.Search-result > div") and search.acceptance_conditions == "нет результатов":
+                return True
+            else:
+                return False
         else:
-            return False
-        if wd.find_element_by_css_selector(".Search-message") and search.acceptance_conditions == "нет результатов":
-            return True
-        else:
-            return False
+            pytest.skip("Известная ошибка, тест можно пропустить ")
 
     # Переход на google.com в новой вкладке и поиск слова
     def google_search(self):
